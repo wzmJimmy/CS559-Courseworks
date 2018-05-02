@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<meta name="robots" content="noindex">
+<html lang="en">
+<body>
+<input type="checkbox" id="op">Ortho
+<button onclick="Tera()">Terra</button>
+<button onclick="Prot()">Protoss</button>
+</br>
+<canvas id="myCanvas" width="700" height="700" style="border:1px solid #000000;" ></canvas>
+</br>
+Eye-position-XY:
+<input id="RotZ" type="range" min="-180" max="180" />
+Eye-position-YZ:
+<input id="RotX" type="range" min="-180" max="0" />
+Zoom-size:
+<input id="Zoom" type="range" min="1" max="3" />
+</br>
+</body>
+
+<head>
+    <meta name="description" content="HW3">
+    <meta charset="utf-8">
+    <title>HW5</title>
+    <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+    <script id="vs" type="notjs">
+        precision highp float;
+        attribute vec3 pos;
+        attribute vec3 color;
+        attribute vec3 norm;
+        uniform mat4 tc;
+        uniform mat4 tp;
+        uniform mat4 tnorm;
+        uniform vec3 light;
+        varying vec3 fNormal;
+        varying vec3 fPosition;
+        varying vec3 fColor;
+        void main(void) {
+            fNormal = normalize((tnorm * vec4(norm, 1.0)).xyz);
+            vec4 position = tc * vec4(pos, 1.0);
+            fPosition = position.xyz;
+            fColor = color;
+            gl_Position = tp * position;
+        }
+    </script>
+    <script id="fs" type="notjs">
+        precision highp float;
+        uniform vec3 light;
+        varying vec3 fPosition;
+        varying vec3 fNormal;
+        varying vec3 fColor;
+
+        const float a_coeff   = 0.6;
+        const float d_coeff   = 1.2;
+        const float s_coeff  = 4.0;
+        const float s_exp    = 64.0;
+        const vec3  l_color     = vec3(1.0,1.0,1.0);
+        //const vec3  color     = vec3(1.0,1.0,1.0);
+        void main(){
+            vec3 l = normalize(light);
+            vec3 n = normalize(fNormal);
+            vec3 e = normalize(-fPosition);
+            vec3 h = normalize (e+l);
+
+            float dl = max(0.0, dot(n, normalize(vec3(.7,.8,0))));
+            //float dl = max(0.0, dot(n, l));
+            vec3 ad_color  = (a_coeff+d_coeff*dl)  * fColor;
+            vec3 s_color = s_coeff * pow(max(0.0,dot(n,h)),s_exp) * l_color;
+
+            gl_FragColor = vec4(ad_color+s_color,1.0) ;
+
+            //vec3 ambient_color  = ambient_coeff  * fColor;
+            //vec3 specular_color = specular_coeff * pow(max(0.0,dot(n,h)),specular_exp) * light_color;
+            //gl_FragColor = vec4(ambient_color+specular_color, 1.0);
+           // gl_FragColor = vec4(color, 1.0);
+        }
+    </script>
+    <script src="Shader.js"></script>
+    <script src="PreShader.js"></script>
+    <script src="supplement.js"></script>
+    <script src="terra.js"></script>
+    <script src="protoss.js"></script>
+
+</head>
+</html>
