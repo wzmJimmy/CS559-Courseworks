@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HW8_Zheming.W.!</title>
+</head>
+<body>
+
+<!-- load the image first  -->
+<script src="images.js"></script>
+
+<!-- load the library then -->
+<script src="lib/twgl-full.js"></script>
+<script src="lib/panel.js"></script>
+<script src="lib/arcball.js"></script>
+<script src="lib/supplement.js"></script>
+<script src="lib/Transform.js"></script>
+
+<!-- Load shaders before shader.js -->
+<script id="vs" type="notjs">
+        precision highp float;
+
+        attribute vec3 pos;
+        attribute vec3 col;
+        attribute vec3 norm;
+        uniform mat4 tmodel;
+        uniform mat4 tview;
+        uniform mat4 tproj;
+        uniform mat4 tnorm;
+
+        varying vec3 fNormal;
+        varying vec3 fPosition;
+        varying vec3 fColor;
+        void main(void) {
+            vec4 position = tmodel * vec4(pos, 1.0);
+            fPosition = position.xyz;
+            fColor = col;
+            fNormal = normalize((tnorm * vec4(norm, 1.0)).xyz);
+            gl_Position = tproj * tview * position;
+        }
+</script>
+<script id="fs" type="notjs">
+        precision highp float;
+
+        //uniform vec3 slight;
+        uniform vec3 dlight;
+
+        varying vec3 fPosition;
+        varying vec3 fNormal;
+        varying vec3 fColor;
+
+        const float a_coeff   = 0.6;
+        const float d_coeff   = 1.2;
+        //const float s_coeff  = 4.0;
+        //const float s_exp    = 64.0;
+        //const vec3  l_color     = vec3(1.0,1.0,1.0);
+        //const vec3  color     = vec3(1.0,0.0,0.0);
+        void main(){
+            //vec3 l = normalize(slight);
+            vec3 n = normalize(fNormal);
+            //vec3 e = normalize(-fPosition);
+            //vec3 h = normalize (e+l);
+
+            float dl = max(0.0,dot(n, normalize(dlight)));
+            vec3 ad_color  = (a_coeff+d_coeff*dl)  * fColor;
+            gl_FragColor = vec4(ad_color,1.0) ;
+            //vec3 s_color = s_coeff * pow(max(0.0,dot(n,h)),s_exp) * l_color;
+            // gl_FragColor = vec4(ad_color+s_color,1.0) ;
+        }
+</script>
+<script id="vs_proj" type="notjs">
+        precision highp float;
+
+        attribute vec3 pos;
+        attribute vec3 col;
+        attribute vec3 norm;
+        uniform mat4 tmodel;
+        uniform mat4 tview;
+        uniform mat4 tproj;
+        uniform mat4 tnorm;
+
+        varying vec3 fNormal;
+        varying vec3 fPosition;
+        varying vec3 fColor;
+        void main(void) {
+            vec4 position = tmodel * vec4(pos, 1.0);
+            fPosition = position.xyz;
+            fColor = col;
+            fNormal = normalize((tnorm * vec4(norm, 1.0)).xyz);
+            gl_Position = tproj * tview * position;
+        }
+</script>
+<script id="fs_proj" type="notjs">
+        precision highp float;
+
+        //uniform vec3 slight;
+        uniform vec3 dlight;
+        uniform mat4 lview;
+        uniform mat4 lproj;
+        uniform sampler2D texSampler0;
+
+        varying vec3 fPosition;
+        varying vec3 fNormal;
+        varying vec3 fColor;
+
+        const float a_coeff   = 0.6;
+        const float d_coeff   = 1.2;
+        //const float s_coeff  = 4.0;
+        //const float s_exp    = 64.0;
+        //const vec3  l_color     = vec3(1.0,1.0,1.0);
+        //const vec3  color     = vec3(1.0,0.0,0.0);
+        void main(){
+            //vec3 l = normalize(slight);
+            vec3 n = normalize(fNormal);
+            //vec3 e = normalize(-fPosition);
+            //vec3 h = normalize (e+l);
+
+            vec2 tcord =  (lproj * lview * vec4(fPosition,1.0)).xy;
+            vec2 cord = (tcord + vec2(1.0,1.0))/2.0;
+            vec4 text = texture2D(texSampler0,cord);
+
+            vec3 pColor = fColor;
+
+            if(tcord.x<=1.0 && tcord.x>=-1.0 && tcord.y<=1.0 && tcord.y>=-1.0 &&text.w==1.0){
+                pColor = text.xyz;
+            }
+
+
+            float dl = max(0.0,dot(n, normalize(dlight)));
+            vec3 ad_color  = (a_coeff+d_coeff*dl)  * (0.05*fColor+0.95*pColor);
+            gl_FragColor = vec4(ad_color,1.0) ;
+            //vec3 s_color = s_coeff * pow(max(0.0,dot(n,h)),s_exp) * l_color;
+            // gl_FragColor = vec4(ad_color+s_color,1.0) ;
+        }
+</script>
+<script id="vs_ball" type="notjs">
+        precision highp float;
+
+        attribute vec3 pos;
+        attribute vec3 col;
+        attribute vec3 norm;
+        uniform mat4 tmodel;
+        uniform mat4 tmodel_noT;
+        uniform mat4 tview;
+        uniform mat4 tproj;
+        uniform mat4 tnorm;
+
+        varying vec3 fNormal;
+        varying vec3 fPosition;
+        varying vec3 fColor;
+        void main(void) {
+            gl_Position = tproj * tview * tmodel * vec4(pos, 1.0);
+            fPosition = (tmodel_noT * vec4(pos, 1.0)).xyz;
+            fColor = col;
+            fNormal = normalize((tnorm * vec4(norm, 1.0)).xyz);
+
+        }
+</script>
+<script id="fs_ball" type="notjs">
+        precision highp float;
+        uniform vec3 dlight;
+        uniform samplerCube texSamplerCube;
+
+        varying vec3 fPosition;
+        varying vec3 fNormal;
+        varying vec3 fColor;
+
+        const float a_coeff   = 0.6;
+        const float d_coeff   = 1.2;
+
+        void main(){
+            vec3 n = normalize(fNormal);
+            vec4 refColor = textureCube(texSamplerCube,fPosition);
+
+            float dl = max(0.0,dot(n, normalize(dlight)));
+            vec3 ad_color  = (a_coeff+d_coeff*dl)  * fColor;
+            //gl_FragColor = vec4(ad_color,1.0);
+            //gl_FragColor = refColor;
+            gl_FragColor =  0.1*vec4(ad_color,1.0)+0.9*refColor ;
+
+        }
+</script>
+
+<script id="vs_bump" type="notjs">
+        precision highp float;
+
+        attribute vec3 pos;
+        attribute vec3 col;
+        attribute vec3 norm;
+        attribute vec2 Texc;
+
+        uniform mat4 tmodel;
+        uniform mat4 tview;
+        uniform mat4 tproj;
+
+        varying vec3 fnorm;
+        varying vec3 fPosition;
+        varying vec3 fColor;
+        varying vec2 fTexc;
+        void main(void) {
+            vec4 position = tmodel * vec4(pos, 1.0);
+            gl_Position = tproj * tview * position;
+            fPosition = position.xyz;
+            fColor = col;
+            fnorm = norm;
+            fTexc = Texc;
+
+        }
+</script>
+<script id="fs_bump" type="notjs">
+        precision highp float;
+
+        //uniform vec3 slight;
+        uniform vec3 dlight;
+        uniform sampler2D texSampler0;
+        uniform sampler2D texSampler1;
+        uniform mat4 tnorm;
+        uniform mat4 tmodel;
+        uniform mat4 lview;
+        uniform mat4 lproj;
+
+        varying vec3 fPosition;
+        varying vec3 fnorm;
+        varying vec3 fColor;
+        varying vec2 fTexc;
+
+        const float a_coeff   = 0.6;
+        const float d_coeff   = 1.2;
+        //const float s_coeff  = 4.0;
+        //const float s_exp    = 64.0;
+        //const vec3  l_color     = vec3(1.0,1.0,1.0);
+        //const vec3  color     = vec3(1.0,0.0,0.0);
+        void main(){
+             vec3 dnorm = texture2D(texSampler0,fTexc).xyz*2.0-1.0;
+             vec3 n_pert = normalize(dnorm*0.5+fnorm);
+             vec3 n = (tnorm * vec4(n_pert, 1.0)).xyz;
+             n = normalize(n);
+             float dl = max(0.0,dot(n, normalize(dlight)));
+             vec3 ad_color  = (a_coeff+d_coeff*dl)  * fColor;
+
+            vec3 pColor = ad_color;
+            vec2 tcord =  (lproj * lview * vec4(fPosition,1.0)).xy;
+            vec2 cord = (tcord + vec2(1.0,1.0))/2.0;
+            vec4 text = texture2D(texSampler1,cord);
+            if(tcord.x<=1.0 && tcord.x>=-1.0 && tcord.y<=1.0 && tcord.y>=-1.0 &&text.w==1.0){
+                vec3 n0 = normalize((tmodel * vec4(fnorm, 1.0))).xyz;
+                float dl0 = max(0.0,dot(n0, normalize(dlight)));
+                pColor =  (a_coeff+d_coeff*dl0) * text.xyz;
+            }
+
+            gl_FragColor = vec4(0.05*ad_color+0.95*pColor,1.0) ;
+
+            //vec3 l = normalize(slight);
+            //vec3 e = normalize(-fPosition);
+            //vec3 h = normalize (e+l);
+
+            //vec3 s_color = s_coeff * pow(max(0.0,dot(n,h)),s_exp) * l_color;
+            // gl_FragColor = vec4(ad_color+s_color,1.0) ;
+        }
+</script>
+
+<script id="vst" type="notjs">
+    precision highp float;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+    uniform mat4 pMatrix;
+    uniform mat4 vMatrix;
+    uniform mat4 mMatrix;
+    void main(void) {
+      gl_Position = pMatrix * vMatrix * mMatrix * vec4(aPosition, 1.0);
+      vTexCoord = aTexCoord;
+    }
+</script>
+<script id="fst" type="notjs">
+    precision highp float;
+    varying vec2 vTexCoord;
+    uniform sampler2D texSampler0;
+    void main(void) {
+        vec4 text = texture2D(texSampler0, vTexCoord);
+      gl_FragColor = text;
+
+      //gl_FragColor = text.w==0.0? vec4(1.0,1.0,1.0,0.0) : text;
+    }
+</script>
+<!-- Uniform shaders stored here-->
+<script src="shader.js"></script>
+
+<!-- My objects loaded here -->
+<script src="Myobj/texturedplane.js"></script>
+<script src="Myobj/reflect_ball.js"></script>
+<script src="Myobj/sphere.js"></script>
+<script src="Myobj/bound.js"></script>
+<script src="Myobj/pyramid.js"></script>
+<script src="Myobj/core.js"></script>
+<script src="Myobj/probe.js"></script>
+<script src="Myobj/plain.js"></script>
+<script src="Myobj/diamond.js"></script>
+<script src="Myobj/mineral.js"></script>
+<script src="Myobj/brick.js"></script>
+<script src="Myobj/nexus.js"></script>
+
+<!-- This gets loaded LAST (actually, it probably doesn't have to) -->
+<script src="graphobj.js"></script>
+<script src="graphicstown.js"></script>
+</body>
+
+
+</html>
