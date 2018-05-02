@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta name="robots" content="noindex">
+<html lang="en">
+<body>
+<canvas id="myCanvas" width="700" height="700" style="border:1px solid #000000;" ></canvas>
+</br>
+Eye-position:
+<input id="RotZ" type="range" min="-180" max="180" />
+Zoom-size:
+<input id="Zoom" type="range" min="1" max="5" />
+Moon-num:
+<input id="Moon" type="range" min="1" max="4" />
+<button onclick="ViewChange()">Ortho/Persp</button>
+<ul>
+    <li>A try to mimic texture in terra system.</li>
+    <li>Without necessary knowledge, I cannot solve which parts of surface is front ot not.</li>
+    <li>So I just give a simple implement by using transparency.</li>
+</ul>
+<!--
+<button onclick="ViewX()">main</button>
+<button onclick="ViewY()">left</button>
+<button onclick="ViewZ()">top</button>
+-->
+
+</body>
+
+<head>
+    <meta name="description" content="HW3">
+    <meta charset="utf-8">
+    <title>HW3</title>
+    <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+    <script id="javascript1" type='text/javascript' src='./js1.js'></script>
+</head>
+</html>
