@@ -106,11 +106,12 @@ window.onload = function() {
 
     // the actual draw function - which is the main "loop"
     function draw() {
-        count = (count+1)%1000;
+        
         // advance the clock appropriately (unless its stopped)
         var curTime = Date.now();
         if (checkboxes.Run.checked) {
             realtime += (curTime - lastTime);
+            count = (count+1)%1000;
         }
         lastTime = curTime;
 
