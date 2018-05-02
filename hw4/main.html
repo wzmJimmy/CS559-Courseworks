@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<meta name="robots" content="noindex">
+<html lang="en">
+<body>
+<button onclick="Tera3D()">Terra</button>
+<button onclick="Protoss()">Protoss</button>
+</br>
+<canvas id="myCanvas" width="700" height="700" style="border:1px solid #000000;" ></canvas>
+</br>
+Eye-position-XY:
+<input id="RotZ" type="range" min="-180" max="180" />
+Eye-position-YZ:
+<input id="RotX" type="range" min="-180" max="0" />
+Zoom-size:
+<input id="Zoom" type="range" min="1" max="5" />
+</br>
+<input type="checkbox" id="op">Ortho
+<input type="checkbox" id="wf">WireFrame
+<input type="checkbox" id="ns">No Sort
+<input type="checkbox" id="pv">Point Lighting
+<input type="checkbox" id="nl">No Lighting
+</br>
+</body>
+
+<head>
+    <meta name="description" content="HW3">
+    <meta charset="utf-8">
+    <title>HW4</title>
+    <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+    <script src="Mypainter.js"></script>
+    <script src="supplement.js"></script>
+    <script src="terra.js"></script>
+    <script src="protoss.js"></script>
+
+</head>
+</html>
