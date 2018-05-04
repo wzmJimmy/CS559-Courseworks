@@ -10,6 +10,10 @@ var grobjects = grobjects || {};
 
     grobjects["Mothership"] = new Mothership([0,12, 0]);
 
+    for(var i =1; i <= 6; i++) {
+        grobjects["Phoenix"+i] = new Phoenix(true,Math.PI/3*i);
+    }
+
     //grobjects["Probes"] = new Probes([4,3, 0]);
     grobjects["Probes1"] = new Probes([-3.5,0,0],true);
     grobjects["Probes2"] = new Probes([-3,0,0],true);

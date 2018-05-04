@@ -50,7 +50,7 @@ var Voidray;
                 textures.push(text);
             }
         }
-
+        this.lastTime = drawingState.realtime;
     }
 
     Voidray.prototype.setflag = function (f) {
@@ -60,7 +60,9 @@ var Voidray;
     Voidray.prototype.draw = function () {
         if(this.run) {
             advance_unif(this);
-            this.theta = frac(this.theta+Math.PI/300,Math.PI*2);
+            var delta = drawingState.realtime - this.lastTime;
+            this.lastTime = drawingState.realtime;
+            this.theta = frac(this.theta+delta*Math.PI/1000,Math.PI*2);
         }
 
         var trans = new Transform();
@@ -74,7 +76,7 @@ var Voidray;
         twgl.setUniforms(shaderProgram, {
             tview: drawingState.view, tproj: drawingState.proj, dlight: drawingState.sunDirection,
             tmodel: trans.get_Trans() ,tnorm: trans.get_Tnorm(),lview: drawingState.lview, lproj: drawingState.lproj
-            ,flag: 0.0
+            ,flag: this.flag?0.0:2.0
         });
         twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);
 

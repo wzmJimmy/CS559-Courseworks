@@ -147,7 +147,7 @@ var reflect_ball;
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, dynamicCubemap, 0);
         renderSkyboxAndCubes();
 
-        cameraM = m4.lookAt(pos,v3.add(pos,[0,1,0]),[1,0,0]);
+        cameraM = m4.lookAt(pos,v3.add(pos,[0,1,0]),[0,0,1]);
         drawingState.view = m4.inverse(cameraM);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, dynamicCubemap, 0);
         renderSkyboxAndCubes();

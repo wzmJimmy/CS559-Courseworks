@@ -27,6 +27,8 @@ newimage("Thor","https://farm1.staticflickr.com/962/41055260524_79dc3fcd9a_o.png
 newimage("Firebat","https://farm1.staticflickr.com/945/26904961567_1b3969e389_o.png");
 newimage("Baneling","https://farm1.staticflickr.com/946/41062604654_812f8c11ea_o.png");
 newimage("Mothership","https://farm1.staticflickr.com/910/41791214701_803be710d1_o.png");
+newimage("Phoenix","https://farm1.staticflickr.com/910/28003896668_f9504f2c47_o.png");
+
 
 newimage("Space0","https://farm1.staticflickr.com/957/41728215621_83a53bd7a7_o.png");
 newimage("Space1","https://farm1.staticflickr.com/944/41687229892_b7c90219cb_o.png");
@@ -37,4 +39,6 @@ newimage("Space5","https://farm1.staticflickr.com/958/40828883675_f4ed0723e7_o.p
 
 
 window.setTimeout(null,120*Object.keys(Images).length);
+
+
 

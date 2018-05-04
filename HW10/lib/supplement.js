@@ -38,12 +38,12 @@ function getRandomInt(min, max) {
 }
 
 function advance_unif(obj) {
-    if ( !obj.lastTime || drawingState.count%150==0) {
-        obj.lastTime = drawingState.realtime;
+    if ( !obj.basicTime || drawingState.count%150==0) {
+        obj.basicTime= drawingState.realtime;
         obj.state = 0;
         return;
     }
-    var delta = (drawingState.realtime - obj.lastTime);
+    var delta = (drawingState.realtime - obj.basicTime);
 
     var vx = Math.sin(obj.orientation);
     var vz = Math.cos(obj.orientation);

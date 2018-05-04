@@ -70,7 +70,7 @@ var Overseer;
         twgl.setUniforms(shaderProgram, {
             tview: drawingState.view, tproj: drawingState.proj, dlight: drawingState.sunDirection,
             tmodel: trans.get_Trans() ,tnorm: trans.get_Tnorm(),lview: drawingState.lview, lproj: drawingState.lproj
-            ,flag: 0.0
+            ,flag: this.flag?0.0:2.0
         });
         twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);
 

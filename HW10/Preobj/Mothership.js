@@ -50,6 +50,7 @@ var Mothership;
                 textures.push(text);
             }
         }
+        this.lastTime = drawingState.realtime;
 
     }
 
@@ -59,7 +60,9 @@ var Mothership;
 
     Mothership.prototype.draw = function () {
         if(this.run) advance_unif(this);
-        this.theta = frac(this.theta+Math.PI/2500,Math.PI*2);
+        var delta = drawingState.realtime - this.lastTime;
+        this.lastTime = drawingState.realtime;
+        this.theta = frac(this.theta+delta*Math.PI/8000,Math.PI*2);
 
         var trans = new Transform();
         if(this.flag) trans.trans(m4.translation(this.position),true);
